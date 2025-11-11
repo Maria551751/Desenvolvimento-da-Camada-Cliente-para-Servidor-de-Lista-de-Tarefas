@@ -11,7 +11,6 @@ html, body {
     height: 100%;
     font-family: "Poppins", sans-serif;
     font-weight: 300;
-    /* Cor padrão do texto (não afeta os títulos que mudamos) */
     color: #f4f4f4; 
     overflow: hidden;
 }
@@ -23,23 +22,21 @@ html, body {
     width: 100%;
     height: 100%;
     z-index: -1; 
-    
     background-image: url('./assets/mae-e-filha-fazer-compras-no-supermercado.jpg');
-    
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     filter: blur(5px); 
     transform: scale(1.05); 
 }
+
 .grid {
     display: grid;
     grid-template-columns: 100%;
     grid-template-rows: 45% 55%;
-    row-gap: 0;
+    row-gap: 0; /* Zerado para o align-self: start funcionar melhor */
     width: 100%;
     height: 100%;
-    
     background-color: rgba(0, 0, 0, 0.4); 
     position: relative;
 
@@ -51,42 +48,88 @@ html, body {
         grid-row: 1;
         width: 100%;
         height: 100%;
+
+        .fas { 
+           font-size: 3rem; 
+           color: #FFFFFF; 
+           margin-bottom: 20px; 
+           text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
+       }
         
         h1 {
             font-size: 1.5rem;
             font-family: "Poppins", sans-serif;
             font-weight: 500;
-            
-           
             color: #FFFFFF;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
         }
     }
-}
 
-    
+   
     .Formulario { 
         width: 100%;
         height: 100%;
         grid-row: 2;
         align-self: start; 
-        gap: 15px;
-
+        gap: 25px; 
         display: flex;
         flex-direction: column;
         align-items: center;
+        
+        
+        padding-top: 20px; 
 
-       
         .title { 
-        display: none;
+            display: none;
+        }
+
+        .form-group { 
+            width: 90%; 
+            &:last-child {
+                margin-top: 20px;
+            }
+        }
             
-    .form-group input,
-    .form-group button {
-        width: 100%; 
-        padding: 10px; 
-        border-radius: 10px; 
-        border: none; 
-        font-family: "Poppins", sans-serif; 
-    }
- }
-}
+        
+        .form-group input {
+            width: 100%;
+            font-family: "Poppins", sans-serif;
+            font-size: 1rem; 
+            color: #FFFFFF; 
+            background-color: transparent; 
+            border: none; 
+            border-bottom: 2px solid rgba(255, 255, 255, 0.7); 
+            padding: 10px 5px; 
+            outline: none; 
+            transition: border-bottom 0.3s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #CCCCCC;
+        }
+
+        .form-group input:focus {
+            border-bottom: 2px solid #FFFFFF;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 12px 10px; 
+            border-radius: 15px; 
+            border: none;
+            font-family: "Poppins", sans-serif;
+            font-size: 1rem;
+            font-weight: 500; 
+            background-color: #543271; 
+            color: #FFFFFF;
+            cursor: pointer; 
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #2e2437; 
+        }
+
+    } 
+
+} 
