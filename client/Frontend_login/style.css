@@ -26,7 +26,7 @@ html, body {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  filter: blur(5px);
+  filter: blur(10px);
   transform: scale(1.05);
 }
 
@@ -118,4 +118,67 @@ html, body {
 }
 .grid .Formulario .form-group button:hover {
   background-color: #2e2437;
+}
+
+@media only screen and (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+  }
+  .grid .label-start {
+    grid-column: 1;
+    grid-row: 1;
+    justify-content: center;
+  }
+  .grid .label-start h1 {
+    font-weight: 500;
+    font-size: 2.7rem;
+  }
+  .grid .label-start i {
+    font-size: 5rem;
+    margin-bottom: 20px;
+  }
+  .grid .Formulario {
+    grid-row: 1;
+    grid-column: 2;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .grid .Formulario .form-group {
+    width: 90%;
+    max-width: 400px;
+    margin: auto;
+    margin-bottom: 20px;
+  }
+  .grid .Formulario .form-group input {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 10px;
+    outline: none;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+  }
+  .grid .Formulario .form-group input:active {
+    border: 2px solid #FFFFFF;
+  }
+  .grid .Formulario .form-group input:focus {
+    border: 2px solid #FFFFFF;
+  }
+  .grid .Formulario .form-group button {
+    width: 100%;
+    height: 60px;
+  }
+  .grid .Formulario .title {
+    display: block;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 30px;
+  }
+  .grid .Formulario .title h1 {
+    font-size: 1.6rem;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+  }
 }/*# sourceMappingURL=style.css.map */
