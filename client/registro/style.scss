@@ -34,7 +34,7 @@ html, body {
     display: grid;
     grid-template-columns: 100%;
     grid-template-rows: 45% 55%;
-    row-gap: 0; /* Zerado para o align-self: start funcionar melhor */
+    row-gap: 0; 
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4); 
