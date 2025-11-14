@@ -319,6 +319,5 @@ Thumbs.db
 .vscode/
 *.code-workspace
 env/
-database/
 *.log.*
 .idea/
