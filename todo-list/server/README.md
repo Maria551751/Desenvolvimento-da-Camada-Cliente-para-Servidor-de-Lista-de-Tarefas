@@ -90,3 +90,26 @@ Para contribuir com o desenvolvimento:
 1. Siga as instruções de setup acima
 2. Execute os testes antes de commitar: `./scripts.sh test-unit`
 3. Mantenha o código limpo e documentado
+
+Já no meus arquivos vc dererá fazer dá seguinte maneira 
+
+### 1. Executando o Back-end (Servidor - Python)
+
+1.  Navegue até a pasta do servidor:
+    ```bash
+    cd todo-list/server
+    ```
+2.  Crie e ative o ambiente virtual:
+    ```bash
+    python -m venv venv
+    source venv/Scripts/activate 
+    ```
+3.  Instale as dependências (só precisa fazer isso uma vez):
+    ```bash
+    pip install -r requirements.txt
+    ```
+4.  ## Inicie o servidor:
+    ```bash
+    python -m uvicorn main:app
+    ```
+    *O servidor estará rodando em `http://localhost:8000`.*
