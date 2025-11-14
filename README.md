@@ -28,9 +28,9 @@ Toda a comunicação com o back-end é centralizada no arquivo `scripts.js` de c
 O repositório está organizado em duas pastas principais:
 
 * `todo-list/server/`
-    * Contém o back-end pré-existente fornecido pelo professor, que serve como API para a aplicação.
+    * Contém o back-end pré-existente (Python/FastAPI) fornecido pelo professor, que serve como API para a aplicação.
 * `client/`
-    * Contém **toda** a camada cliente (front-end) desenvolvida para esta atividade, incluindo as páginas de login, registro e gestão de tarefas.
+    * Contém **toda** a camada cliente (front-end) desenvolvida para esta atividade, incluindo as páginas `login`, `registro` e `tarefas`.
 
 ---
 
@@ -38,30 +38,34 @@ O repositório está organizado em duas pastas principais:
 
 Para testar a aplicação completa, você precisa executar o **Back-end (servidor)** e o **Front-end (cliente)** separadamente.
 
-### 1. Executando o Back-end (Servidor)
+### 1. Executando o Back-end (Servidor - Python)
 
 1.  Navegue até a pasta do servidor:
     ```bash
     cd todo-list/server
     ```
-2.  Instale as dependências (só precisa fazer isso uma vez):
+2.  Crie e ative o ambiente virtual (venv):
     ```bash
-    npm install
+    # (No Windows MINGW64/Git Bash)
+    python -m venv venv
+    source venv/Scripts/activate
     ```
-3.  Inicie o servidor:
+3.  Instale as dependências (só precisa fazer isso uma vez):
     ```bash
-    npm start
+    pip install -r requirements.txt
     ```
-    *O servidor estará rodando em `http://localhost:3000`.*
+4.  Inicie o servidor:
+    ```bash
+    python -m uvicorn main:app
+    ```
+    *O servidor estará rodando em `http://localhost:8000`.*
 
 ### 2. Executando o Front-end (Cliente)
 
-1.  Em **outro terminal**, navegue até a pasta do seu front-end (ex: a pasta de login):
-    ```bash
-    cd client/Frontend_login
-    ```
-2.  Abra o arquivo `index.html` no seu navegador.
-    *(Recomenda-se usar a extensão "Live Server" do VS Code para facilitar).*
+1.  Em **outro terminal**, abra a pasta do seu projeto no VS Code.
+2.  Navegue até a pasta do front-end que deseja visualizar (ex: `client/login` ou `client/registro`).
+3.  Clique com o botão direito no arquivo `index.html` e escolha **"Open with Live Server"**.
+    *(Isso iniciará o front-end em `http://localhost:5500`).*
 
 ---
 
