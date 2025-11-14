@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    color: #f4f4f4; 
+    overflow: hidden;
+}
+
+.fundo-embaçado {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+    background-image: url('./assets/mae-e-filha-fazer-compras-no-supermercado.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    filter: blur(10px); 
+    transform: scale(1.05); 
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 45% 55%;
+    row-gap: 0; 
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); 
+    position: relative;
+
+    .label-start {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        grid-row: 1;
+        width: 100%;
+        height: 100%;
+
+        .fas { 
+           font-size: 3rem; 
+           color: #FFFFFF; 
+           margin-bottom: 20px; 
+           text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
+       }
+        
+        h1 {
+            font-size: 1.5rem;
+            font-family: "Poppins", sans-serif;
+            font-weight: 500;
+            color: #FFFFFF;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
+        }
+    }
+
+   
+    .Formulario { 
+        width: 100%;
+        height: 100%;
+        grid-row: 2;
+        align-self: start; 
+        gap: 25px; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        
+        padding-top: 20px; 
+
+        .title { 
+            display: none;
+        }
+
+        .form-group { 
+            width: 90%; 
+            &:last-child {
+                margin-top: 20px;
+            }
+        }
+            
+        
+        .form-group input {
+            width: 100%;
+            font-family: "Poppins", sans-serif;
+            font-size: 1rem; 
+            color: #FFFFFF; 
+            background-color: transparent; 
+            border: none; 
+            border-bottom: 2px solid rgba(255, 255, 255, 0.7); 
+            padding: 10px 5px; 
+            outline: none; 
+            transition: border-bottom 0.3s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #CCCCCC;
+        }
+
+        .form-group input:focus {
+            border-bottom: 2px solid #FFFFFF;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 12px 10px; 
+            border-radius: 15px; 
+            border: none;
+            font-family: "Poppins", sans-serif;
+            font-size: 1rem;
+            font-weight: 500; 
+            background-color: #543271; 
+            color: #FFFFFF;
+            cursor: pointer; 
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #2e2437; 
+        }
+
+    } 
+
+} 
+
+@media only screen and (min-width: 1024px) {
+    .grid{
+        grid-template-columns: 50% 50%;
+        grid-template-rows: 100%;
+
+        .label-start {
+            grid-column: 1;
+            grid-row: 1;
+            justify-content: center;
+        
+            h1 {
+                font-weight: 500; 
+                font-size: 2.7rem;
+            }
+
+            i {
+                font-size: 5rem;
+                margin-bottom: 20px;
+            }
+        }
+
+        .Formulario {
+            grid-row: 1;
+            grid-column: 2;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+
+            .form-group {
+                width: 90%;
+                max-width: 400px;
+                margin: auto;
+                margin-bottom: 20px;
+
+                input {
+                    width: 100%;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    outline: none;
+                    font-family: "Poppins", sans-serif;
+                    font-weight: 300;
+
+                    &:active {
+                        border: 2px solid #FFFFFF ;
+                    }
+
+                    &:focus {
+                        border: 2px solid #FFFFFF;
+                    }
+
+                }
+                button {
+                    width: 100%;
+                    height: 60px;
+                }
+            }
+
+            .title {
+                display: block;
+                width: 90%;
+                margin: auto;
+                margin-bottom: 30px;
+
+                h1 {
+                    font-size: 1.6rem;
+                    font-family:"Poppins", sans-serif;
+                    font-weight: 700;
+                }
+            }
+         
+
+        }
+    }
+}
