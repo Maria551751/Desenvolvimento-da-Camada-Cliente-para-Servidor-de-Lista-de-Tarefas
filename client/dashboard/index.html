@@ -1,59 +1,64 @@
-
-
-
-
-
-<section class="form-container-tarefa">
-    <h2>Calculadora de Itens</h2>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Compras</title>
     
-    <div class="input-group-row">
-        <input type="text" id="input-nome" placeholder="Nome do item">
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-blur"></div>
+
+    <header class="header">
+        <div class="header-content">
+            <h1>Lista de Compras</h1>
+            <button id="botao-logout">
+                Sair <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="container-principal">
         
-        <input type="number" id="input-preco" placeholder="Preço (R$)" step="0.01">
-        <input type="number" id="input-quantidade" placeholder="Qtd" value="1">
-        <button id="btn-adicionar-item">Adicionar <i class="fas fa-plus"></i></button>
-    </div>
-</section>
+        <section class="form-container-tarefa">
+            <h2>Calculadora de Itens</h2>
+            
+            <div class="input-group-row">
+                <input type="text" id="input-nome" placeholder="Nome do item">
+                <input type="number" id="input-preco" placeholder="Preço (R$)" step="0.01">
+                <input type="number" id="input-quantidade" placeholder="Qtd" value="1">
+                <button id="btn-adicionar-item">Adicionar <i class="fas fa-plus"></i></button>
+            </div>
+        </section>
 
-<section class="lista-container-tarefas">
-    <table class="tabela-precos">
-        <thead>
-            <tr>
-                <th>Item</th> 
-                <th>Preço Unit.</th>
-                <th>Qtd.</th>
-                <th>Total</th>
-                <th>Ação</th>
-            </tr>
-        </thead>
-        <tbody id="corpo-tabela">
-            </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3"><strong>Total Geral:</strong></td>
-                <td colspan="2" id="total-geral"><strong>R$ 0,00</strong></td>
-            </tr>
-        </tfoot>
-    </table>
-</section>
+        <section class="lista-container-tarefas">
+            <table class="tabela-precos">
+                <thead>
+                    <tr>
+                        <th>Item</th> 
+                        <th>Preço Unit.</th>
+                        <th>Qtd.</th>
+                        <th>Total</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela">
+                    </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><strong>Total Geral:</strong></td>
+                        <td colspan="2" id="total-geral"><strong>R$ 0,00</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
 
-<section class="lista-container-tarefas">
-    <table class="tabela-precos">
-        <thead>
-            <tr>
-                <th>Preço Unit.</th>
-                <th>Qtd.</th>
-                <th>Total</th>
-                <th>Ação</th>
-            </tr>
-        </thead>
-        <tbody id="corpo-tabela">
-            </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="2"><strong>Total Geral:</strong></td>
-                <td colspan="2" id="total-geral"><strong>R$ 0,00</strong></td>
-            </tr>
-        </tfoot>
-    </table>
-</section>
+    </main>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
+

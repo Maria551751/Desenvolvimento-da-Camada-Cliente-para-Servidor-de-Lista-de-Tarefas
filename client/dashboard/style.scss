@@ -11,32 +11,71 @@ body {
     background-color: #f0f2f5;
     color: #333;
     line-height: 1.6;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; 
-    
-    min-height: 100vh; 
-    margin: 0;
-    padding: 20px;
+    /* Removi o display: flex daqui para não quebrar o Header */
 }
 
-
+/* --- Cabeçalho --- */
+/* --- Cabeçalho Limpo --- */
 .header {
-    background-color: #543271;
+    /* Fundo roxo sólido ou com leve transparência */
+    background-color: rgba(84, 50, 113, 0.95); 
     color: #FFFFFF;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    
+    /* Fixa o cabeçalho no topo da tela (opcional, mas fica chique) */
+    position: sticky; 
+    top: 0;
+    z-index: 100; /* Garante que fique acima de tudo */
 
-    h1 {
-        font-size: 1.5rem;
+    .header-content {
+        max-width: 900px; 
+        margin: 0 auto; 
+        
+        /* * MUDEI AQUI: De 15px para 30px (topo e baixo)
+         * Isso vai deixar a barra bem mais alta.
+         */
+        padding: 30px 20px;
+        
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h1 {
+            /* (Opcional) Se quiser o texto maior também, mude para 1.8rem */
+            font-size: 1.8rem; 
+            margin: 0;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); 
+        }
+
+        #botao-logout {
+            /* ... (o resto do botão continua igual) ... */
+            font-family: "Poppins", sans-serif;
+            font-size: 0.9rem; 
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: #FFFFFF;
+                color: #543271;
+                border-color: #FFFFFF;
+            }
+        }
     }
+  }
+
+
+    
 
     #botao-logout {
         font-family: "Poppins", sans-serif;
-        font-size: 1.9rem;
+        font-size: 1rem; /* Reduzi de 1.9rem para 1rem para ficar proporcional */
         padding: 8px 12px;
         background-color: transparent;
         color: #FFFFFF;
@@ -50,39 +89,131 @@ body {
             color: #543271;
         }
     }
-}
 
 
+/* --- Container Principal --- */
 .container-principal {
-    max-width: 900px;
-    margin: 40px auto;
-   max-width: 500px; 
+    /* Mobile First: Largura total com um pouco de margem */
+    width: 95%; 
+    max-width: 500px; /* No celular, não deixa ficar muito largo */
+    margin: 40px auto; /* Isso centraliza o container na tela */
+    
     background-color: #fff; 
     padding: 20px;
     border-radius: 15px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-    margin-top: 20px; 
+
 }
 
-
+/* --- Formulário --- */
 .form-container-tarefa {
     background-color: #FFFFFF;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin-bottom: 40px;
+    padding: 10px; /* Reduzi um pouco para mobile */
+    margin-bottom: 30px;
 
     h2 {
         margin-bottom: 20px;
         text-align: center;
         color: #543271;
-        font-size: 1.8rem; 
-        text-align: center; 
+        font-size: 1.5rem; 
     }
 }
 
+.background-blur {
+    position: fixed; /* Fixa na tela, não rola junto com o conteúdo */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Fica atrás de tudo */
+    
+    /* Escolha a imagem que você quer no fundo. 
+       Pode ser a mesma do banner para combinar! */
+    background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2574&auto=format&fit=crop');
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    /* O efeito de desfoque */
+    filter: blur(8px); 
+    
+    /* (Opcional) Deixa um pouco escuro para o card branco destacar mais */
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3); /* Máscara escura */
+    }
+}
+
+/* --- Inputs (Mobile First) --- */
 .input-group-row {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column; /* Um embaixo do outro no celular */
     gap: 15px;
-} 
+
+    input {
+        width: 100%;
+        padding: 15px; /* Botões grandes para toque */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    button {
+        width: 100%;
+        padding: 15px;
+        background-color: #543271;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+}
+
+/* --- Tabela (Mobile First) --- */
+.lista-container-tarefas {
+    overflow-x: auto; /* Permite rolar a tabela de lado se não couber */
+}
+
+.tabela-precos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    
+    th {
+        background-color: #543271;
+        color: white;
+    }
+}
+
+
+/* --- MEDIA QUERY (Desktop) --- */
+@media (min-width: 1024px) {
+    .container-principal {
+        max-width: 900px; /* Agora sim, cresce no desktop */
+    }
+
+    .input-group-row {
+        flex-direction: row; 
+        align-items: center;
+
+        /* Ajuste de tamanhos */
+        #input-nome { flex: 3; }
+        #input-preco { flex: 2; }
+        #input-quantidade { flex: 1; }
+        button { flex: 1; width: auto; }
+    }
+}
