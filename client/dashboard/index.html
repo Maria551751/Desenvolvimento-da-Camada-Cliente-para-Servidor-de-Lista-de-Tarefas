@@ -1,42 +1,59 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minhas Tarefas</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-</head>
-<body>
 
-    <header class="header">
-        <h1>Minha Lista de Tarefas</h1>
-        <button id="botao-logout">Sair <i class="fas fa-sign-out-alt"></i></button>
-    </header>
 
-    <main class="container-principal">
+
+
+
+<section class="form-container-tarefa">
+    <h2>Calculadora de Itens</h2>
+    
+    <div class="input-group-row">
+        <input type="text" id="input-nome" placeholder="Nome do item">
         
-        <section class="form-container-tarefa">
-            <form id="form-nova-tarefa">
-                <h2>Adicionar nova tarefa</h2>
-                <div class="form-group">
-                    <input type="text" id="input-titulo-tarefa" placeholder="Título da tarefa" required>
-                </div>
-                <div class="form-group">
-                    <textarea id="input-descricao-tarefa" placeholder="Descrição (opcional)"></textarea>
-                </div>
-                <button type="submit">Adicionar Tarefa</button>
-            </form>
-        </section>
+        <input type="number" id="input-preco" placeholder="Preço (R$)" step="0.01">
+        <input type="number" id="input-quantidade" placeholder="Qtd" value="1">
+        <button id="btn-adicionar-item">Adicionar <i class="fas fa-plus"></i></button>
+    </div>
+</section>
 
-        <section class="lista-container-tarefas">
-            <h2>Suas Tarefas</h2>
-            <ul id="lista-de-tarefas" class="lista-de-tarefas">
-                </ul>
-        </section>
+<section class="lista-container-tarefas">
+    <table class="tabela-precos">
+        <thead>
+            <tr>
+                <th>Item</th> 
+                <th>Preço Unit.</th>
+                <th>Qtd.</th>
+                <th>Total</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="corpo-tabela">
+            </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"><strong>Total Geral:</strong></td>
+                <td colspan="2" id="total-geral"><strong>R$ 0,00</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</section>
 
-    </main>
-
-    <script src="scripts.js"></script>
-</body>
-</html>
+<section class="lista-container-tarefas">
+    <table class="tabela-precos">
+        <thead>
+            <tr>
+                <th>Preço Unit.</th>
+                <th>Qtd.</th>
+                <th>Total</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody id="corpo-tabela">
+            </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2"><strong>Total Geral:</strong></td>
+                <td colspan="2" id="total-geral"><strong>R$ 0,00</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</section>

@@ -8,6 +8,7 @@ O objetivo é desenvolver a camada de cliente (front-end) para um servidor de li
 
 * **@Maria551751**
 * **@oJohnnykkk**
+* **Anshbjnhs**
 
 ---
 
