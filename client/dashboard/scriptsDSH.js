@@ -1,75 +1,58 @@
 // client/dashboard/scripts.js
 
+// URL do servidor (Back-end)
 const BASE_URL = 'http://localhost:8000';
-const tasksListElement = document.getElementById('lista-de-tarefas');
-const logoutButton = document.getElementById('botao-logout');
 
-// --- UTILS ---
+// --- ELEMENTOS DO HTML ---
+const tabelaCorpo = document.getElementById('corpo-tabela');
+const displayTotalGeral = document.getElementById('total-geral');
+const logoutButton = document.getElementById('botao-logout');
+const btnAdicionar = document.getElementById('btn-adicionar-item');
+
+// Variável para somar o total
+let totalGeral = 0;
+
+
+// --- 1. AUTENTICAÇÃO E SEGURANÇA ---
 
 function getAuthHeaders() {
     const token = localStorage.getItem('accessToken');
+    
     if (!token) {
-        // Redireciona para o login se não houver token
+        // Se não tiver o "crachá" (token), manda de volta pro Login
+        // Ajuste o caminho '../login' se sua pasta tiver outro nome
         window.location.href = '../login/index.html';
         return null; 
     }
-    // Retorna o cabeçalho de autorização exigido pelo FastAPI
+
     return {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
     };
 }
 
-// --- LOGOUT ---
-
-logoutButton.addEventListener('click', () => {
-    localStorage.removeItem('accessToken');
-    alert('Você foi desconectado.');
-    window.location.href = '../login/index.html';
-});
-
-// --- RENDERIZAÇÃO DE TAREFAS ---
-
-function renderTasks(tasks) {
-    tasksListElement.innerHTML = ''; // Limpa a lista antes de renderizar
-
-    if (tasks.length === 0) {
-        tasksListElement.innerHTML = '<li class="mensagem-vazia">Nenhuma tarefa encontrada. Adicione uma nova!</li>';
-        return;
-    }
-
-    tasks.forEach(task => {
-        // Cria o elemento da lista (li)
-        const listItem = document.createElement('li');
-        listItem.className = 'tarefa-item';
-        // Armazena o ID da tarefa no próprio elemento para uso posterior (Update/Delete)
-        listItem.dataset.taskId = task.id; 
-
-        // Cria o conteúdo da tarefa
-        listItem.innerHTML = `
-            <div class="tarefa-info">
-                <h3>${task.title}</h3>
-                <p>${task.description || 'Sem descrição.'}</p>
-            </div>
-            <div class="tarefa-acoes">
-                <button class="botao-editar" data-task-id="${task.id}">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button class="botao-excluir" data-task-id="${task.id}">
-                    <i class="fas fa-trash"></i> Excluir
-                </button>
-            </div>
-        `;
-
-        tasksListElement.appendChild(listItem);
+// Botão de Sair
+if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('accessToken');
+        window.location.href = '../login/index.html';
     });
 }
 
-// --- LISTAGEM DE TAREFAS (READ) ---
 
-async function fetchTasks() {
+// --- 2. FUNÇÕES VISUAIS (Formatação) ---
+
+// Transforma número (10.5) em dinheiro (R$ 10,50)
+function formatarMoeda(valor) {
+    return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+
+// --- 3. CARREGAR A LISTA (Ler do Servidor) ---
+
+async function fetchItems() {
     const headers = getAuthHeaders();
-    if (!headers) return; // Se não houver headers, a função de utilidade já redirecionou.
+    if (!headers) return;
 
     try {
         const response = await fetch(`${BASE_URL}/tasks`, {
@@ -79,208 +62,186 @@ async function fetchTasks() {
 
         if (response.ok) {
             const data = await response.json();
-            // data.tasks é uma lista de tarefas
-            renderTasks(data.tasks); 
+            // O servidor devolve { tasks: [...] }
+            renderizarTabela(data.tasks); 
         } else if (response.status === 401) {
-            // Token expirado ou inválido
-            localStorage.removeItem('accessToken');
             alert('Sua sessão expirou. Faça login novamente.');
+            localStorage.removeItem('accessToken');
             window.location.href = '../login/index.html';
-        } else {
-            const error = await response.json();
-            alert(`Erro ao carregar tarefas: ${error.detail}`);
         }
     } catch (error) {
-        console.error('Erro de rede ao buscar tarefas:', error);
-        alert('Não foi possível conectar ao servidor. Verifique se o back-end está ativo.');
+        console.error('Erro ao buscar itens:', error);
+        alert('Erro de conexão com o servidor.');
     }
 }
+
+
+// --- 4. DESENHAR A TABELA ---
+
+function renderizarTabela(tarefas) {
+    tabelaCorpo.innerHTML = ''; // Limpa a tabela antes de desenhar
+    totalGeral = 0; // Zera o total para recalcular
+
+    tarefas.forEach(tarefa => {
+        // --- A MÁGICA ---
+        // O servidor guarda 'title' (Nome) e 'description' (Texto).
+        // Nós guardamos o Preço e a Qtd escondidos dentro da 'description' como um JSON.
+        
+        let nome = tarefa.title;
+        let preco = 0;
+        let qtd = 1;
+
+        try {
+            // Tenta ler os dados escondidos
+            const dadosExtras = JSON.parse(tarefa.description);
+            preco = Number(dadosExtras.preco);
+            qtd = Number(dadosExtras.qtd);
+        } catch (e) {
+            // Se der erro (ex: tarefa antiga ou sem descrição), ignora
+            console.log("Item sem preço definido:", nome);
+        }
+
+        // Calcula o total desta linha
+        const totalLinha = preco * qtd;
+        totalGeral += totalLinha;
+
+        // Cria o HTML da linha (tr)
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${nome}</td>
+            <td>${formatarMoeda(preco)}</td>
+            <td>${qtd}</td>
+            <td><strong>${formatarMoeda(totalLinha)}</strong></td>
+            <td>
+                <button class="btn-remove" data-id="${tarefa.id}" title="Remover item">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+
+        tabelaCorpo.appendChild(tr);
+    });
+
+    // Atualiza o Total Geral lá embaixo da tabela
+    if (displayTotalGeral) {
+        displayTotalGeral.innerHTML = `<strong>${formatarMoeda(totalGeral)}</strong>`;
+    }
+    
+    // Re-ativa os botões de excluir das novas linhas
+    adicionarEventosExcluir();
+}
+
+
+// --- 5. ADICIONAR NOVO ITEM (Enviar pro Servidor) ---
+
+if (btnAdicionar) {
+    btnAdicionar.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const inputNome = document.getElementById('input-nome');
+        const inputPreco = document.getElementById('input-preco');
+        const inputQtd = document.getElementById('input-quantidade');
+
+        const nome = inputNome.value;
+        const preco = inputPreco.value; // Mantém como string por enquanto
+        const qtd = inputQtd.value;
+
+        // Validação
+        if (!nome || !preco || !qtd) {
+            alert("Preencha todos os campos!");
+            return;
+        }
+
+        const headers = getAuthHeaders();
+        if (!headers) return;
+
+        // --- EMPACOTAR DADOS ---
+        // O servidor só aceita 'title' e 'description'.
+        // Guardamos o Preço e a Qtd dentro da 'description'.
+        const dadosParaSalvar = JSON.stringify({
+            preco: preco,
+            qtd: qtd
+        });
+
+        const payload = {
+            title: nome,
+            description: dadosParaSalvar
+        };
+
+        try {
+            const response = await fetch(`${BASE_URL}/tasks`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                // Limpar campos
+                inputNome.value = '';
+                inputPreco.value = '';
+                inputQtd.value = '1';
+                inputNome.focus();
+                
+                // Atualizar a tabela
+                fetchItems();
+            } else {
+                alert("Erro ao adicionar item.");
+            }
+        } catch (error) {
+            console.error("Erro de rede:", error);
+        }
+    });
+}
+
+
+// --- 6. EXCLUIR ITEM ---
+
+function adicionarEventosExcluir() {
+    const botoesExcluir = document.querySelectorAll('.btn-remove');
+
+    botoesExcluir.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            // Pega o ID do item que guardamos no botão
+            const id = e.target.closest('button').dataset.id;
+            
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
+            if(!confirm("Tem certeza que deseja excluir este item?")) return;
+
+            try {
+                const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+                    method: 'DELETE',
+                    headers: headers
+                });
+
+                if (response.status === 204) {
+                    fetchItems(); // Recarrega a lista
+                } else {
+                    alert("Erro ao excluir.");
+                }
+            } catch (error) {
+                console.error("Erro ao excluir:", error);
+            }
+        });
+    });
+}
+
+
+// --- 7. MELHORIA DE USO (Selecionar texto ao clicar) ---
+const inputsParaSelecionar = ['input-preco', 'input-quantidade', 'input-nome'];
+inputsParaSelecionar.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+        element.addEventListener('focus', function() {
+            this.select();
+        });
+    }
+});
 
 
 // --- INICIALIZAÇÃO ---
+// Quando a página abre, carrega os itens
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifica a autenticação e carrega as tarefas ao iniciar a página
-    fetchTasks();
+    fetchItems();
 });
-
-const formNovaTarefa = document.getElementById('form-nova-tarefa');
-
-// --- CRIAÇÃO DE TAREFAS (CREATE) ---
-
-formNovaTarefa.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const titleInput = document.getElementById('input-titulo-tarefa');
-    const descriptionInput = document.getElementById('input-descricao-tarefa');
-    
-    const title = titleInput.value;
-    const description = descriptionInput.value;
-    // O deadline é opcional, mas poderia ser adicionado no HTML e aqui.
-
-    // Apenas title é obrigatório
-    if (!title) {
-        alert("O título da tarefa é obrigatório.");
-        return;
-    }
-
-    const headers = getAuthHeaders();
-    if (!headers) return;
-
-    const payload = { 
-        title: title, 
-        description: description 
-    };
-
-    try {
-        const response = await fetch(`${BASE_URL}/tasks`, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(payload),
-        });
-
-        if (response.ok) {
-            // Sucesso (Status 201 Created)!
-            alert('Tarefa adicionada com sucesso!');
-            
-            // Limpa o formulário
-            titleInput.value = '';
-            descriptionInput.value = '';
-
-            // Recarrega a lista para mostrar a nova tarefa
-            fetchTasks(); 
-        } else {
-            const error = await response.json();
-            alert(`Erro ao criar tarefa: ${error.detail}`);
-        }
-    } catch (error) {
-        console.error('Erro de rede ao criar tarefa:', error);
-        alert('Falha na comunicação com o servidor.');
-    }
-});
-
-// --- EXCLUSÃO DE TAREFAS (DELETE) ---
-
-async function deleteTask(taskId) {
-    // 1. Confirmação do usuário
-    if (!confirm("Tem certeza que deseja excluir esta tarefa?")) {
-        return;
-    }
-
-    const headers = getAuthHeaders();
-    if (!headers) return; // Redireciona se não houver token
-
-    try {
-        // Envia a requisição DELETE para /tasks/{task_id}
-        const response = await fetch(`${BASE_URL}/tasks/${taskId}`, {
-            method: 'DELETE',
-            headers: headers,
-        });
-
-        if (response.status === 204) {
-            // Sucesso! Status 204 No Content
-            alert('Tarefa excluída com sucesso!');
-            
-            // Recarrega a lista para remover a tarefa excluída
-            fetchTasks(); 
-        } else if (response.status === 404) {
-            alert('Erro: Tarefa não encontrada ou você não tem permissão para excluí-la.');
-        } else {
-            const error = await response.json();
-            alert(`Erro ao excluir tarefa: ${error.detail}`);
-        }
-    } catch (error) {
-        console.error('Erro de rede ao excluir tarefa:', error);
-        alert('Falha na comunicação com o servidor.');
-    }
-}
-
-
-// --- DELEGAÇÃO DE EVENTOS para botões de Ação ---
-
-tasksListElement.addEventListener('click', (e) => {
-    // Verifica se o clique foi em um botão
-    const clickedButton = e.target.closest('button');
-
-    if (!clickedButton) return;
-
-    const taskId = clickedButton.dataset.taskId;
-
-    if (clickedButton.classList.contains('botao-excluir')) {
-        // Chama a função de exclusão
-        deleteTask(taskId);
-    } 
-    // O código de edição será adicionado aqui, no else if
-});
-
-// --- ATUALIZAÇÃO DE TAREFAS (UPDATE) ---
-
-async function updateTask(taskId, newTitle) {
-    const headers = getAuthHeaders();
-    if (!headers) return;
-
-    const payload = { 
-        title: newTitle 
-        // Você poderia adicionar 'description' aqui se implementasse campos de edição mais robustos
-    };
-
-    try {
-        const response = await fetch(`${BASE_URL}/tasks/${taskId}`, {
-            method: 'PUT', // O Back-end usa PUT para atualização total
-            headers: headers,
-            body: JSON.stringify(payload),
-        });
-
-        if (response.ok) {
-            alert('Tarefa atualizada com sucesso!');
-            // Recarrega a lista para mostrar o novo título
-            fetchTasks(); 
-        } else if (response.status === 404) {
-            alert('Erro: Tarefa não encontrada.');
-        } else {
-            const error = await response.json();
-            alert(`Erro ao atualizar tarefa: ${error.detail}`);
-        }
-    } catch (error) {
-        console.error('Erro de rede ao atualizar tarefa:', error);
-        alert('Falha na comunicação com o servidor.');
-    }
-}
-
-
-// --- DELEGAÇÃO DE EVENTOS (ATUALIZADA) ---
-
-tasksListElement.addEventListener('click', (e) => {
-    const clickedButton = e.target.closest('button');
-
-    if (!clickedButton) return;
-
-    const taskId = clickedButton.dataset.taskId;
-
-    if (clickedButton.classList.contains('botao-excluir')) {
-        deleteTask(taskId);
-    } else if (clickedButton.classList.contains('botao-editar')) {
-        // Lógica de Edição
-        const currentTitle = clickedButton.closest('.tarefa-item').querySelector('h3').textContent;
-        
-        // Simplesmente pede o novo título via prompt
-        const newTitle = prompt("Edite o título da tarefa:", currentTitle);
-
-        if (newTitle && newTitle.trim() !== currentTitle.trim()) {
-            // Se o usuário digitou um novo título válido
-            updateTask(taskId, newTitle);
-        } else if (newTitle !== null) {
-            // Se o usuário clicou em OK mas não alterou nada
-            alert("Nenhuma alteração foi feita.");
-        }
-    }
-});
-    const inputsParaSelecionar = ['input-preco', 'input-quantidade', 'input-nome'];
-
-    inputsParaSelecionar.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.addEventListener('focus', function() {
-                this.select(); // O comando que deixa tudo azul
-            });
-        }
-    });

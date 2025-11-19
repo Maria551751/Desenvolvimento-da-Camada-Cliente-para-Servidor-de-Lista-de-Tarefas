@@ -15,6 +15,30 @@ html, body {
   overflow: hidden;
 }
 
+/* --- Estilo do Link de Login (Corrigido) --- */
+.login-link {
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+}
+.login-link p {
+  font-size: 0.9rem;
+  color: #FFFFFF; /* Texto "Já possui..." em branco */
+  font-weight: 300;
+}
+.login-link a {
+  /* AQUI ESTÁ O SEGREDO: Forçar a cor branca */
+  color: #FFFFFF !important;
+  font-weight: 700; /* Negrito para destacar mais */
+  text-decoration: none; /* Tira o sublinhado padrão */
+  margin-left: 5px;
+  transition: color 0.3s;
+}
+.login-link a:hover {
+  color: #d1b3ff !important; /* Roxo claro brilhante ao passar o mouse */
+  text-decoration: underline;
+}
+
 .fundo-embaçado {
   position: fixed;
   top: 0;
