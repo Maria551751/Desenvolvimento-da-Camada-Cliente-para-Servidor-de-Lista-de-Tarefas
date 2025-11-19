@@ -274,3 +274,13 @@ tasksListElement.addEventListener('click', (e) => {
         }
     }
 });
+    const inputsParaSelecionar = ['input-preco', 'input-quantidade', 'input-nome'];
+
+    inputsParaSelecionar.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('focus', function() {
+                this.select(); // O comando que deixa tudo azul
+            });
+        }
+    });

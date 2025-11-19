@@ -15,6 +15,7 @@ html, body {
     overflow: hidden;
 }
 
+/* Fundo com imagem e desfoque */
 .fundo-embaçado {
     position: fixed;
     top: 0;
@@ -22,14 +23,15 @@ html, body {
     width: 100%;
     height: 100%;
     z-index: -1; 
-    background-image: url('./assets/mae-e-filha-fazer-compras-no-supermercado.jpg');
+    background-image: url('./assets/mae-e-filha-fazer-compras-no-supermercado.jpg'); /* Verifique se o caminho da imagem está certo */
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    filter: blur(10px); 
+    filter: blur(8px); 
     transform: scale(1.05); 
 }
 
+/* Layout Principal */
 .grid {
     display: grid;
     grid-template-columns: 100%;
@@ -37,9 +39,10 @@ html, body {
     row-gap: 0; 
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); 
+    background-color: rgba(0, 0, 0, 0.4); /* Camada escura */
     position: relative;
 
+    /* Lado Esquerdo (Texto e Ícone) */
     .label-start {
         display: flex;
         flex-direction: column;
@@ -48,14 +51,14 @@ html, body {
         grid-row: 1;
         width: 100%;
         height: 100%;
-
-        .fas { 
-           font-size: 3rem; 
-           color: #FFFFFF; 
-           margin-bottom: 20px; 
-           text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
-       }
         
+        .fas { 
+            font-size: 3rem; 
+            color: #FFFFFF; 
+            margin-bottom: 20px; 
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
+        }
+
         h1 {
             font-size: 1.5rem;
             font-family: "Poppins", sans-serif;
@@ -65,7 +68,7 @@ html, body {
         }
     }
 
-   
+    /* Lado Direito (Formulário) */
     .Formulario { 
         width: 100%;
         height: 100%;
@@ -75,8 +78,6 @@ html, body {
         display: flex;
         flex-direction: column;
         align-items: center;
-        
-        
         padding-top: 20px; 
 
         .title { 
@@ -85,12 +86,9 @@ html, body {
 
         .form-group { 
             width: 90%; 
-            &:last-child {
-                margin-top: 20px;
-            }
         }
             
-        
+        /* Estilo dos Inputs Transparentes */
         .form-group input {
             width: 100%;
             font-family: "Poppins", sans-serif;
@@ -112,6 +110,7 @@ html, body {
             border-bottom: 2px solid #FFFFFF;
         }
 
+        /* Estilo do Botão */
         .form-group button {
             width: 100%;
             padding: 12px 10px; 
@@ -120,7 +119,7 @@ html, body {
             font-family: "Poppins", sans-serif;
             font-size: 1rem;
             font-weight: 500; 
-            background-color: #543271; 
+            background-color: #543271; /* Roxo */
             color: #FFFFFF;
             cursor: pointer; 
             transition: background-color 0.3s ease;
@@ -130,12 +129,39 @@ html, body {
             background-color: #2e2437; 
         }
 
-    } 
+        /* --- NOVO: Estilo do Link de Cadastro --- */
+        .register-link {
+            margin-top: 10px;
+            text-align: center;
+            
+            p {
+                font-size: 0.9rem;
+                color: #FFFFFF;
+                font-weight: 300;
+            }
+    
+            a {
+                color: #FFFFFF;
+                font-weight: 600;
+                text-decoration: none;
+                margin-left: 5px;
+                transition: color 0.3s;
+    
+                &:hover {
+                    color: #d1b3ff; /* Roxo claro no hover */
+                    text-decoration: underline;
+                }
+            }
+        }
 
-} 
+    } /* Fim do .Formulario */
 
+} /* Fim do .grid */
+
+
+/* --- MEDIA QUERY (Desktop) --- */
 @media only screen and (min-width: 1024px) {
-    .grid{
+    .grid {
         grid-template-columns: 50% 50%;
         grid-template-rows: 100%;
 
@@ -149,7 +175,7 @@ html, body {
                 font-size: 2.7rem;
             }
 
-            i {
+            .fas {
                 font-size: 5rem;
                 margin-bottom: 20px;
             }
@@ -163,30 +189,21 @@ html, body {
             flex-direction: column;
             align-items: center;
 
-
-            .form-group {
+            /* Ajuste do tamanho máximo no desktop */
+            .form-group, .register-link, .title {
                 width: 90%;
                 max-width: 400px;
-                margin: auto;
+                margin: auto; /* Centraliza horizontalmente */
+            }
+            
+            .form-group {
                 margin-bottom: 20px;
 
                 input {
-                    width: 100%;
                     padding: 15px 20px;
-                    border-radius: 10px;
-                    outline: none;
-                    font-family: "Poppins", sans-serif;
-                    font-weight: 300;
-
-                    &:active {
-                        border: 2px solid #FFFFFF ;
-                    }
-
-                    &:focus {
-                        border: 2px solid #FFFFFF;
-                    }
-
+                    /* No desktop, podemos manter transparente ou mudar se quiser */
                 }
+
                 button {
                     width: 100%;
                     height: 60px;
@@ -195,18 +212,22 @@ html, body {
 
             .title {
                 display: block;
-                width: 90%;
-                margin: auto;
                 margin-bottom: 30px;
 
                 h1 {
                     font-size: 1.6rem;
                     font-family:"Poppins", sans-serif;
                     font-weight: 700;
+                    color: #FFF;
+                    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+                    text-align: center;
                 }
             }
-         
-
+            
+            /* Ajuste do link no desktop para ficar alinhado */
+            .register-link {
+                margin-top: 0;
+            }
         }
     }
 }
