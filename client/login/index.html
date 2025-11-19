@@ -12,14 +12,17 @@
 
 <body>
 
+   <body>
     <div class="fundo-embaçado"></div>
-    <div class="grid">
 
+    <div class="grid">
+        
         <div class="label-start">
-            <i class="fas fa-shopping-basket"></i>
+           <i class="fas fa-tasks"></i>
 
             <h1>Pronto para começar?</h1>
         </div>
+       
 
         <div class="Formulario">
             <form action="#">
@@ -47,7 +50,18 @@
         </div>
 
     </div>
+    <div id="modal-erro" class="modal-overlay hidden">
+        <div class="modal-box">
+            <i class="fas fa-exclamation-triangle icone-erro"></i>
+            <h3>Ops! Algo deu errado.</h3>
+            <p id="mensagem-erro-texto">Mensagem de erro aqui.</p>
+            <div class="modal-botoes">
+                <button id="btn-fechar-modal">Tentar Novamente</button>
+            </div>
+        </div>
+    </div>
 
+    
       <script src="./scripts.js"></script>
 </body>
    

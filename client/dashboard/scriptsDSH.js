@@ -2,19 +2,21 @@
 
 const BASE_URL = 'http://localhost:8000';
 
-// Elementos
+// Elementos Principais
 const tabelaCorpo = document.getElementById('corpo-tabela');
-const displayTotalGeral = document.getElementById('total-geral');
 const logoutButton = document.getElementById('botao-logout');
 const btnAdicionar = document.getElementById('btn-adicionar-item');
-
-// Inputs
-const inputNome = document.getElementById('input-nome');
-const inputPreco = document.getElementById('input-preco');
-const inputQtd = document.getElementById('input-quantidade');
+const inputTitulo = document.getElementById('input-titulo');
+const inputDescricao = document.getElementById('input-descricao');
 const inputIdEdicao = document.getElementById('input-id-edicao');
 
-let totalGeral = 0;
+// Elementos do MODAL
+const modalConfirmacao = document.getElementById('modal-confirmacao');
+const btnCancelarModal = document.getElementById('btn-cancelar-modal');
+const btnConfirmarExclusao = document.getElementById('btn-confirmar-exclusao');
+
+// Variável para guardar qual ID vamos excluir
+let idParaExcluir = null;
 
 // --- AUTENTICAÇÃO ---
 function getAuthHeaders() {
@@ -29,19 +31,37 @@ function getAuthHeaders() {
     };
 }
 
+// --- LÓGICA DO MODAL DE LOGOUT ---
+
+const modalLogout = document.getElementById('modal-logout');
+const btnCancelarLogout = document.getElementById('btn-cancelar-logout');
+const btnConfirmarLogout = document.getElementById('btn-confirmar-logout');
+
+// 1. Quando clica no botão "Sair" lá em cima
 if (logoutButton) {
-    logoutButton.addEventListener('click', () => {
+    logoutButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        modalLogout.classList.remove('hidden'); // Mostra a janelinha
+    });
+}
+
+// 2. Quando clica em "Cancelar"
+if (btnCancelarLogout) {
+    btnCancelarLogout.addEventListener('click', () => {
+        modalLogout.classList.add('hidden'); // Esconde a janelinha
+    });
+}
+
+// 3. Quando clica em "Sim, Sair" (Ação Real)
+if (btnConfirmarLogout) {
+    btnConfirmarLogout.addEventListener('click', () => {
+        // Aqui sim fazemos o logout de verdade
         localStorage.removeItem('accessToken');
         window.location.href = '../login/index.html';
     });
 }
 
-// --- FORMATAÇÃO ---
-function formatarMoeda(valor) {
-    return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
-// --- CARREGAR ---
+// --- CARREGAR TAREFAS ---
 async function fetchItems() {
     const headers = getAuthHeaders();
     if (!headers) return;
@@ -66,37 +86,24 @@ async function fetchItems() {
 // --- RENDERIZAR ---
 function renderizarTabela(tarefas) {
     tabelaCorpo.innerHTML = '';
-    totalGeral = 0;
+
+    if (tarefas.length === 0) {
+        tabelaCorpo.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhuma tarefa encontrada.</td></tr>';
+        return;
+    }
 
     tarefas.forEach(tarefa => {
-        let nome = tarefa.title;
-        let preco = 0;
-        let qtd = 1;
-
-        try {
-            const dadosExtras = JSON.parse(tarefa.description);
-            preco = Number(dadosExtras.preco);
-            qtd = Number(dadosExtras.qtd);
-        } catch (e) { console.log("Item sem detalhes"); }
-
-        const totalLinha = preco * qtd;
-        totalGeral += totalLinha;
-
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${nome}</td>
-            <td>${formatarMoeda(preco)}</td>
-            <td>${qtd}</td>
-            <td><strong>${formatarMoeda(totalLinha)}</strong></td>
+            <td><strong>${tarefa.title}</strong></td>
+            <td>${tarefa.description || '-'}</td>
             <td>
                 <button class="btn-acao btn-editar" 
                         data-id="${tarefa.id}" 
-                        data-nome="${nome}"
-                        data-preco="${preco}"
-                        data-qtd="${qtd}">
+                        data-title="${tarefa.title}"
+                        data-description="${tarefa.description}">
                     <i class="fas fa-edit"></i>
                 </button>
-                
                 <button class="btn-acao btn-excluir" data-id="${tarefa.id}">
                     <i class="fas fa-trash"></i>
                 </button>
@@ -105,37 +112,28 @@ function renderizarTabela(tarefas) {
         tabelaCorpo.appendChild(tr);
     });
 
-    if (displayTotalGeral) {
-        displayTotalGeral.innerHTML = `<strong>${formatarMoeda(totalGeral)}</strong>`;
-    }
-    
     adicionarEventosBotoes();
 }
 
-// --- ADICIONAR OU ATUALIZAR ---
+// --- SALVAR (CRIAR OU EDITAR) ---
 btnAdicionar.addEventListener('click', async (e) => {
     e.preventDefault();
+    const titulo = inputTitulo.value;
+    const descricao = inputDescricao.value;
+    const idParaEditar = inputIdEdicao.value;
 
-    const nome = inputNome.value;
-    const preco = inputPreco.value;
-    const qtd = inputQtd.value;
-    const idParaEditar = inputIdEdicao.value; // Verifica se tem um ID aqui
-
-    if (!nome || !preco || !qtd) {
-        alert("Preencha todos os campos!");
+    if (!titulo) {
+        alert("O título da tarefa é obrigatório!");
         return;
     }
 
     const headers = getAuthHeaders();
     if (!headers) return;
 
-    const dadosParaSalvar = JSON.stringify({ preco: preco, qtd: qtd });
-    const payload = { title: nome, description: dadosParaSalvar };
+    const payload = { title: titulo, description: descricao };
 
     try {
         let response;
-        
-        // SE TIVER ID, É EDIÇÃO (PUT). SE NÃO, É CRIAÇÃO (POST).
         if (idParaEditar) {
             response = await fetch(`${BASE_URL}/tasks/${idParaEditar}`, {
                 method: 'PUT',
@@ -154,65 +152,87 @@ btnAdicionar.addEventListener('click', async (e) => {
             limparFormulario();
             fetchItems();
         } else {
-            alert("Erro ao salvar item.");
+            alert("Erro ao salvar tarefa.");
         }
     } catch (error) {
         console.error("Erro:", error);
     }
 });
 
-// --- EVENTOS DE EDITAR E EXCLUIR ---
+// --- LÓGICA DO MODAL DE EXCLUSÃO ---
+
+// 1. Quando clica no botão "Sim, Excluir" do modal
+btnConfirmarExclusao.addEventListener('click', async () => {
+    if (!idParaExcluir) return;
+
+    const headers = getAuthHeaders();
+    if (!headers) return;
+
+    try {
+        const response = await fetch(`${BASE_URL}/tasks/${idParaExcluir}`, {
+            method: 'DELETE',
+            headers: headers
+        });
+
+        if (response.status === 204) {
+            fetchItems(); // Recarrega a lista
+            fecharModal(); // Esconde o modal
+        } else {
+            alert("Erro ao excluir.");
+        }
+    } catch (error) {
+        console.error("Erro ao excluir:", error);
+    }
+});
+
+// 2. Quando clica no botão "Cancelar"
+btnCancelarModal.addEventListener('click', fecharModal);
+
+// Funções para abrir e fechar
+function abrirModal(id) {
+    idParaExcluir = id; // Guarda o ID na variável global
+    modalConfirmacao.classList.remove('hidden'); // Mostra a janelinha
+}
+
+function fecharModal() {
+    idParaExcluir = null;
+    modalConfirmacao.classList.add('hidden'); // Esconde a janelinha
+}
+
+// --- EVENTOS DA TABELA ---
 function adicionarEventosBotoes() {
-    // Botões Excluir
+    // Botões Excluir (Lixeira)
     document.querySelectorAll('.btn-excluir').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
+        btn.addEventListener('click', (e) => {
+            // Em vez de confirm(), chamamos nossa função do modal
             const id = e.target.closest('button').dataset.id;
-            if(!confirm("Excluir este item?")) return;
-
-            const headers = getAuthHeaders();
-            if (!headers) return;
-
-            await fetch(`${BASE_URL}/tasks/${id}`, { method: 'DELETE', headers: headers });
-            fetchItems();
+            abrirModal(id); 
         });
     });
 
-    // Botões Editar
+    // Botões Editar (Lápis)
     document.querySelectorAll('.btn-editar').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const botao = e.target.closest('button');
             
-            // Pega os dados que guardamos no botão HTML
-            const id = botao.dataset.id;
-            const nome = botao.dataset.nome;
-            const preco = botao.dataset.preco;
-            const qtd = botao.dataset.qtd;
+            inputTitulo.value = botao.dataset.title;
+            inputDescricao.value = botao.dataset.description !== "null" ? botao.dataset.description : "";
+            inputIdEdicao.value = botao.dataset.id;
 
-            // Joga os dados de volta nos inputs
-            inputNome.value = nome;
-            inputPreco.value = preco;
-            inputQtd.value = qtd;
-            inputIdEdicao.value = id; // Guarda o ID para sabermos que é edição
-
-            // Muda o visual do botão para avisar que estamos editando
             btnAdicionar.innerHTML = 'Atualizar <i class="fas fa-sync-alt"></i>';
-            btnAdicionar.style.backgroundColor = '#007bff'; // Muda pra azul
+            btnAdicionar.style.backgroundColor = '#007bff'; 
             
-            inputNome.focus();
+            inputTitulo.focus();
         });
     });
 }
 
 function limparFormulario() {
-    inputNome.value = '';
-    inputPreco.value = '';
-    inputQtd.value = '1';
-    inputIdEdicao.value = ''; // Limpa o ID
-    
-    // Volta o botão ao normal
-    btnAdicionar.innerHTML = 'Adicionar <i class="fas fa-plus"></i>';
-    btnAdicionar.style.backgroundColor = '#543271'; // Volta pra roxo
+    inputTitulo.value = '';
+    inputDescricao.value = '';
+    inputIdEdicao.value = '';
+    btnAdicionar.innerHTML = 'Salvar <i class="fas fa-save"></i>';
+    btnAdicionar.style.backgroundColor = '#543271'; 
 }
 
-// --- INICIALIZAÇÃO ---
 document.addEventListener('DOMContentLoaded', fetchItems);

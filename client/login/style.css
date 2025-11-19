@@ -15,7 +15,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Fundo com imagem e desfoque */
+/* --- Fundo com imagem e desfoque --- */
 .fundo-embaçado {
   position: fixed;
   top: 0;
@@ -23,27 +23,38 @@ html, body {
   width: 100%;
   height: 100%;
   z-index: -1;
-  background-image: url("./assets/mae-e-filha-fazer-compras-no-supermercado.jpg"); /* Verifique se o caminho da imagem está certo */
+  /* Imagem de Escritório */
+  background-image: url("https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  filter: blur(8px);
+  filter: blur(6px);
   transform: scale(1.05);
 }
+.fundo-embaçado::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
 
-/* Layout Principal */
+/* =========================================
+   ESTILO MOBILE (PADRÃO)
+   ========================================= */
 .grid {
   display: grid;
+  /* Mobile: Uma coluna só */
   grid-template-columns: 100%;
   grid-template-rows: 45% 55%;
   row-gap: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4); /* Camada escura */
   position: relative;
-  /* Lado Esquerdo (Texto e Ícone) */
-  /* Lado Direito (Formulário) */
-  /* Fim do .Formulario */
+  /* --- Lado Esquerdo (Texto e Ícone) --- */
+  /* --- Lado Direito (Formulário) --- */
 }
 .grid .label-start {
   display: flex;
@@ -53,6 +64,7 @@ html, body {
   grid-row: 1;
   width: 100%;
   height: 100%;
+  z-index: 2;
 }
 .grid .label-start .fas {
   font-size: 3rem;
@@ -77,15 +89,15 @@ html, body {
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
-  /* Estilo dos Inputs Transparentes */
-  /* Estilo do Botão */
-  /* --- NOVO: Estilo do Link de Cadastro --- */
+  z-index: 2;
+  /* Link "Não tem conta?" */
 }
 .grid .Formulario .title {
-  display: none;
+  display: none; /* Esconde título no mobile */
 }
 .grid .Formulario .form-group {
   width: 90%;
+  /* Botão Roxo Moderno */
 }
 .grid .Formulario .form-group input {
   width: 100%;
@@ -97,7 +109,7 @@ html, body {
   border-bottom: 2px solid rgba(255, 255, 255, 0.7);
   padding: 10px 5px;
   outline: none;
-  transition: border-bottom 0.3s ease;
+  transition: all 0.3s ease;
 }
 .grid .Formulario .form-group input::-moz-placeholder {
   color: #CCCCCC;
@@ -107,26 +119,30 @@ html, body {
 }
 .grid .Formulario .form-group input:focus {
   border-bottom: 2px solid #FFFFFF;
+  padding-left: 10px;
 }
 .grid .Formulario .form-group button {
   width: 100%;
   padding: 12px 10px;
-  border-radius: 15px;
+  border-radius: 12px;
   border: none;
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
-  font-weight: 500;
-  background-color: #543271; /* Roxo */
+  font-weight: 600;
+  background: linear-gradient(135deg, #543271, #7b4b9c);
   color: #FFFFFF;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(84, 50, 113, 0.4);
 }
 .grid .Formulario .form-group button:hover {
-  background-color: #2e2437;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(84, 50, 113, 0.6);
 }
 .grid .Formulario .register-link {
-  margin-top: 10px;
+  margin-top: 20px;
   text-align: center;
+  width: 100%;
 }
 .grid .Formulario .register-link p {
   font-size: 0.9rem;
@@ -135,20 +151,84 @@ html, body {
 }
 .grid .Formulario .register-link a {
   color: #FFFFFF;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   margin-left: 5px;
   transition: color 0.3s;
 }
 .grid .Formulario .register-link a:hover {
-  color: #d1b3ff; /* Roxo claro no hover */
+  color: #d1b3ff;
   text-decoration: underline;
 }
 
-/* Fim do .grid */
-/* --- MEDIA QUERY (Desktop) --- */
+/* --- ESTILO DO MODAL (Global) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease;
+}
+.modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modal-box {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 350px;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+}
+.modal-box .icone-erro {
+  font-size: 3rem;
+  color: #dc3545;
+  margin-bottom: 15px;
+}
+.modal-box h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.modal-box p {
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+.modal-box button {
+  background-color: #543271;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+.modal-box button:hover {
+  background-color: #3c2452;
+}
+
+/* =========================================
+   ESTILO DESKTOP (Telas grandes)
+   ========================================= */
 @media only screen and (min-width: 1024px) {
   .grid {
+    /* Muda para 2 colunas lado a lado */
     grid-template-columns: 50% 50%;
     grid-template-rows: 100%;
   }
@@ -172,31 +252,30 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Ajuste do tamanho máximo no desktop */
-    /* Ajuste do link no desktop para ficar alinhado */
+    /* Limita largura e centraliza */
   }
   .grid .Formulario .form-group, .grid .Formulario .register-link, .grid .Formulario .title {
     width: 90%;
     max-width: 400px;
-    margin: auto; /* Centraliza horizontalmente */
+    margin: auto;
   }
   .grid .Formulario .form-group {
     margin-bottom: 20px;
   }
   .grid .Formulario .form-group input {
     padding: 15px 20px;
-    /* No desktop, podemos manter transparente ou mudar se quiser */
   }
   .grid .Formulario .form-group button {
     width: 100%;
     height: 60px;
+    font-size: 1.1rem;
   }
   .grid .Formulario .title {
-    display: block;
+    display: block; /* Mostra título no PC */
     margin-bottom: 30px;
   }
   .grid .Formulario .title h1 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-family: "Poppins", sans-serif;
     font-weight: 700;
     color: #FFF;

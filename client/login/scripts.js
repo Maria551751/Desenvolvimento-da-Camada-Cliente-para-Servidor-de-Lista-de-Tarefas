@@ -1,38 +1,62 @@
 // client/login/scripts.js
 
-// URL do servidor (Back-end)
 const BASE_URL = 'http://localhost:8000';
 
 document.addEventListener('DOMContentLoaded', () => {
-    
     const formLogin = document.querySelector('form');
+    
+    // Elementos do Modal de Erro
+    const modalErro = document.getElementById('modal-erro');
+    const textoErro = document.getElementById('mensagem-erro-texto');
+    const btnFecharModal = document.getElementById('btn-fechar-modal');
 
+    // Função para mostrar o Modal
+    function mostrarErro(mensagem) {
+        if(textoErro && modalErro) {
+            textoErro.textContent = mensagem;
+            modalErro.classList.remove('hidden');
+        } else {
+            alert(mensagem); 
+        }
+    }
+
+    // Fechar modal pelo botão
+    if(btnFecharModal) {
+        btnFecharModal.addEventListener('click', () => {
+            modalErro.classList.add('hidden');
+        });
+    }
+
+    // Fechar modal clicando fora
+    if(modalErro) {
+        modalErro.addEventListener('click', (e) => {
+            if (e.target === modalErro) {
+                modalErro.classList.add('hidden');
+            }
+        });
+    }
+
+    // Lógica do Login
     formLogin.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Impede a página de recarregar
+        event.preventDefault(); 
 
-        // 1. Captura os dados digitados
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        // Validação básica
         if (!email || !password) {
-            alert("Por favor, preencha todos os campos.");
+            mostrarErro("Por favor, preencha todos os campos.");
             return;
         }
 
-        // 2. Monta o pacote de dados
         const payload = {
             email: email,
             password: password
         };
 
         try {
-            // 3. Envia para o servidor (Endpoint de Login)
             const response = await fetch(`${BASE_URL}/auth/login`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
@@ -40,34 +64,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 // --- SUCESSO! ---
-                
-                // 4. Salva o Token (o "crachá") no navegador
-                // É isso que permite entrar no Dashboard depois
                 localStorage.setItem('accessToken', data.access_token);
-
-                // (Opcional) Salva o nome do usuário para mostrar depois
+                
                 if (data.user && data.user.name) {
                     localStorage.setItem('userName', data.user.name);
                 }
-
-                alert("Login realizado com sucesso!");
-
-                // 5. REDIRECIONA PARA A LISTA DE COMPRAS
-                // Nota: Usamos '../tarefas' porque é o nome da sua pasta
+                
+                
                 window.location.href = '../dashboard/index.html';
 
             } else {
                 // --- ERRO ---
                 if (response.status === 401) {
-                    alert("E-mail ou senha incorretos.");
+                    mostrarErro("E-mail ou senha incorretos.");
                 } else {
-                    alert(`Erro ao entrar: ${data.detail || 'Tente novamente mais tarde.'}`);
+                    mostrarErro(`Erro: ${data.detail || 'Tente novamente.'}`);
                 }
             }
 
         } catch (error) {
             console.error("Erro de rede:", error);
-            alert("Erro ao conectar com o servidor. Verifique se ele está ligado.");
+            mostrarErro("Sem conexão com o servidor.");
         }
     });
 });

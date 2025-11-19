@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Compras</title>
+    <title>Gerenciador de Tarefas</title>
     
     <link rel="stylesheet" href="style.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
@@ -14,7 +13,7 @@
 
     <header class="header">
         <div class="header-content">
-            <h1>Lista de Compras</h1>
+            <h1>Minhas Tarefas</h1>
             <button id="botao-logout">
                 Sair <i class="fas fa-sign-out-alt"></i>
             </button>
@@ -24,42 +23,68 @@
     <main class="container-principal">
         
         <section class="form-container-tarefa">
-            <h2>Calculadora de Itens</h2>
+            <h2>Nova Tarefa</h2>
             
             <div class="input-group-row">
-                <input type="text" id="input-nome" placeholder="Nome do item">
-                <input type="number" id="input-preco" placeholder="Preço (R$)" step="0.01">
-                <input type="number" id="input-quantidade" placeholder="Qtd" value="1">
+                <input type="text" id="input-titulo" placeholder="O que você precisa fazer?" required>
+                
+                <input type="text" id="input-descricao" placeholder="Descrição ou detalhes (opcional)">
+                
                 <input type="hidden" id="input-id-edicao">
-                <button id="btn-adicionar-item">Adicionar <i class="fas fa-plus"></i></button>
+
+                <button id="btn-adicionar-item">
+                    Salvar <i class="fas fa-save"></i>
+                </button>
             </div>
         </section>
 
         <section class="lista-container-tarefas">
-            <table class="tabela-precos">
+            <table class="tabela-tarefas">
                 <thead>
                     <tr>
-                        <th>Item</th> 
-                        <th>Preço Unit.</th>
-                        <th>Qtd.</th>
-                        <th>Total</th>
-                        <th>Ação</th>
+                        <th>Tarefa</th> 
+                        <th>Descrição</th>
+                        <th class="coluna-acao">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="corpo-tabela">
                     </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3"><strong>Total Geral:</strong></td>
-                        <td colspan="2" id="total-geral"><strong>R$ 0,00</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
+                </table>
         </section>
 
     </main>
+    <div id="modal-confirmacao" class="modal-overlay hidden">
+        <div class="modal-box">
+            <i class="fas fa-exclamation-circle icone-alerta"></i>
+            <h3>Tem certeza?</h3>
+            <p>Você realmente deseja excluir esta tarefa?</p>
+            <div class="modal-botoes">
+                <button id="btn-cancelar-modal">Cancelar</button>
+                <button id="btn-confirmar-exclusao">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-logout" class="modal-overlay hidden">
+        <div class="modal-box">
+            <i class="fas fa-sign-out-alt icone-alerta" style="color: #543271;"></i>
+            <h3>Sair do sistema?</h3>
+            <p>Você precisará fazer login novamente para acessar suas tarefas.</p>
+            <div class="modal-botoes">
+                <button id="btn-cancelar-logout">Cancelar</button>
+                <button id="btn-confirmar-logout">Sim, Sair</button>
+            </div>
+        </div>
+    </div>
+
 
     <script src="./scriptsDSH.js"></script>
 </body>
-</html>
 
+    
+
+   
+    
+
+
+</html>

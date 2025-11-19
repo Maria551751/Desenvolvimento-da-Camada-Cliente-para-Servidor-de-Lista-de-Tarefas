@@ -15,30 +15,7 @@ html, body {
   overflow: hidden;
 }
 
-/* --- Estilo do Link de Login (Corrigido) --- */
-.login-link {
-  margin-top: 20px;
-  text-align: center;
-  width: 100%;
-}
-.login-link p {
-  font-size: 0.9rem;
-  color: #FFFFFF; /* Texto "Já possui..." em branco */
-  font-weight: 300;
-}
-.login-link a {
-  /* AQUI ESTÁ O SEGREDO: Forçar a cor branca */
-  color: #FFFFFF !important;
-  font-weight: 700; /* Negrito para destacar mais */
-  text-decoration: none; /* Tira o sublinhado padrão */
-  margin-left: 5px;
-  transition: color 0.3s;
-}
-.login-link a:hover {
-  color: #d1b3ff !important; /* Roxo claro brilhante ao passar o mouse */
-  text-decoration: underline;
-}
-
+/* --- Fundo com imagem e desfoque --- */
 .fundo-embaçado {
   position: fixed;
   top: 0;
@@ -46,14 +23,25 @@ html, body {
   width: 100%;
   height: 100%;
   z-index: -1;
-  background-image: url("./assets/mae-e-filha-fazer-compras-no-supermercado.jpg");
+  /* Mesma imagem do Login para manter o padrão */
+  background-image: url("https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop");
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  filter: blur(10px);
+  filter: blur(6px);
   transform: scale(1.05);
 }
+.fundo-embaçado::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
 
+/* --- Layout Principal (Grid) --- */
 .grid {
   display: grid;
   grid-template-columns: 100%;
@@ -63,6 +51,8 @@ html, body {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
   position: relative;
+  /* --- Lado Esquerdo (Texto e Ícone) --- */
+  /* --- Lado Direito (Formulário) --- */
 }
 .grid .label-start {
   display: flex;
@@ -72,6 +62,7 @@ html, body {
   grid-row: 1;
   width: 100%;
   height: 100%;
+  z-index: 2;
 }
 .grid .label-start .fas {
   font-size: 3rem;
@@ -91,20 +82,20 @@ html, body {
   height: 100%;
   grid-row: 2;
   align-self: start;
-  gap: 25px;
+  gap: 20px; /* Um pouco menos de gap pois tem mais campos */
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
+  z-index: 2;
+  /* Link "Já possui conta?" */
 }
 .grid .Formulario .title {
   display: none;
 }
 .grid .Formulario .form-group {
   width: 90%;
-}
-.grid .Formulario .form-group:last-child {
-  margin-top: 20px;
+  /* Botão Moderno */
 }
 .grid .Formulario .form-group input {
   width: 100%;
@@ -116,7 +107,7 @@ html, body {
   border-bottom: 2px solid rgba(255, 255, 255, 0.7);
   padding: 10px 5px;
   outline: none;
-  transition: border-bottom 0.3s ease;
+  transition: all 0.3s ease;
 }
 .grid .Formulario .form-group input::-moz-placeholder {
   color: #CCCCCC;
@@ -126,24 +117,49 @@ html, body {
 }
 .grid .Formulario .form-group input:focus {
   border-bottom: 2px solid #FFFFFF;
+  padding-left: 10px;
 }
 .grid .Formulario .form-group button {
   width: 100%;
   padding: 12px 10px;
-  border-radius: 15px;
+  border-radius: 12px;
   border: none;
   font-family: "Poppins", sans-serif;
   font-size: 1rem;
-  font-weight: 500;
-  background-color: #543271;
+  font-weight: 600;
+  background: linear-gradient(135deg, #543271, #7b4b9c);
   color: #FFFFFF;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(84, 50, 113, 0.4);
 }
 .grid .Formulario .form-group button:hover {
-  background-color: #2e2437;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(84, 50, 113, 0.6);
+}
+.grid .Formulario .login-link {
+  margin-top: 10px;
+  text-align: center;
+  width: 100%;
+}
+.grid .Formulario .login-link p {
+  font-size: 0.9rem;
+  color: #FFFFFF;
+  font-weight: 300;
+}
+.grid .Formulario .login-link a {
+  color: #FFFFFF !important;
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 5px;
+  transition: color 0.3s;
+}
+.grid .Formulario .login-link a:hover {
+  color: #d1b3ff !important;
+  text-decoration: underline;
 }
 
+/* --- MEDIA QUERY (Desktop) --- */
 @media only screen and (min-width: 1024px) {
   .grid {
     grid-template-columns: 50% 50%;
@@ -158,7 +174,7 @@ html, body {
     font-weight: 500;
     font-size: 2.7rem;
   }
-  .grid .label-start i {
+  .grid .label-start .fas {
     font-size: 5rem;
     margin-bottom: 20px;
   }
@@ -170,39 +186,35 @@ html, body {
     flex-direction: column;
     align-items: center;
   }
-  .grid .Formulario .form-group {
+  .grid .Formulario .form-group, .grid .Formulario .login-link, .grid .Formulario .title {
     width: 90%;
     max-width: 400px;
     margin: auto;
-    margin-bottom: 20px;
+  }
+  .grid .Formulario .form-group {
+    margin-bottom: 15px; /* Um pouco menos de margem pois tem 3 campos */
   }
   .grid .Formulario .form-group input {
-    width: 100%;
     padding: 15px 20px;
-    border-radius: 10px;
-    outline: none;
-    font-family: "Poppins", sans-serif;
-    font-weight: 300;
-  }
-  .grid .Formulario .form-group input:active {
-    border: 2px solid #FFFFFF;
-  }
-  .grid .Formulario .form-group input:focus {
-    border: 2px solid #FFFFFF;
   }
   .grid .Formulario .form-group button {
     width: 100%;
     height: 60px;
+    font-size: 1.1rem;
   }
   .grid .Formulario .title {
     display: block;
-    width: 90%;
-    margin: auto;
     margin-bottom: 30px;
   }
   .grid .Formulario .title h1 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-family: "Poppins", sans-serif;
     font-weight: 700;
+    color: #FFF;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
+  .grid .Formulario .login-link {
+    margin-top: 10px;
   }
 }/*# sourceMappingURL=style.css.map */

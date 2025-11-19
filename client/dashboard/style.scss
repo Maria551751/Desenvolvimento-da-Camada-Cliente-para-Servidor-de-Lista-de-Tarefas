@@ -11,46 +11,48 @@ body {
     background-color: #f0f2f5;
     color: #333;
     line-height: 1.6;
-    /* Removi o display: flex daqui para não quebrar o Header */
+}
+
+/* Fundo embaçado (mantivemos porque é bonito) */
+.background-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    
+    background-image: url('https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=2072&auto=format&fit=crop'); 
+    background-size: cover;
+    background-position: center;
+    filter: blur(12px); 
 }
 
 /* --- Cabeçalho --- */
-/* --- Cabeçalho Limpo --- */
 .header {
-    /* Fundo roxo sólido ou com leve transparência */
     background-color: rgba(84, 50, 113, 0.95); 
     color: #FFFFFF;
     width: 100%;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    
-    /* Fixa o cabeçalho no topo da tela (opcional, mas fica chique) */
     position: sticky; 
     top: 0;
-    z-index: 100; /* Garante que fique acima de tudo */
+    z-index: 100;
 
     .header-content {
         max-width: 900px; 
         margin: 0 auto; 
-        
-        /* * MUDEI AQUI: De 15px para 30px (topo e baixo)
-         * Isso vai deixar a barra bem mais alta.
-         */
-        padding: 30px 20px;
-        
+        padding: 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
 
         h1 {
-            /* (Opcional) Se quiser o texto maior também, mude para 1.8rem */
-            font-size: 1.8rem; 
+            font-size: 1.5rem;
             margin: 0;
             font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3); 
         }
 
         #botao-logout {
-            /* ... (o resto do botão continua igual) ... */
             font-family: "Poppins", sans-serif;
             font-size: 0.9rem; 
             padding: 8px 15px;
@@ -64,178 +66,306 @@ body {
             &:hover {
                 background-color: #FFFFFF;
                 color: #543271;
-                border-color: #FFFFFF;
             }
         }
     }
-  }
-
-
-    
-
-    #botao-logout {
-        font-family: "Poppins", sans-serif;
-        font-size: 1rem; /* Reduzi de 1.9rem para 1rem para ficar proporcional */
-        padding: 8px 12px;
-        background-color: transparent;
-        color: #FFFFFF;
-        border: 2px solid #FFFFFF;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-
-        &:hover {
-            background-color: #FFFFFF;
-            color: #543271;
-        }
-    }
-
+}
 
 /* --- Container Principal --- */
 .container-principal {
-    /* Mobile First: Largura total com um pouco de margem */
-    width: 95%; 
-    max-width: 500px; /* No celular, não deixa ficar muito largo */
-    margin: 40px auto; /* Isso centraliza o container na tela */
-    
-    background-color: #fff; 
-    padding: 20px;
-    border-radius: 15px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
 /* --- Formulário --- */
+/* --- Formulário (Card Superior) --- */
 .form-container-tarefa {
     background-color: #FFFFFF;
-    padding: 10px; /* Reduzi um pouco para mobile */
-    margin-bottom: 30px;
+    padding: 30px;
+    border-radius: 12px; /* Bordas mais arredondadas */
+    
+    /* Sombra mais difusa e elegante */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); 
+    
+    /* Detalhe charmoso: uma linha roxa no topo */
+    border-top: 5px solid #543271; 
+    
+    margin-bottom: 40px;
 
     h2 {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
         text-align: center;
         color: #543271;
-        font-size: 1.5rem; 
-    }
-}
-/* --- Estilo do Link de Login (Corrigido) --- */
-.background-blur {
-    position: fixed; /* Fixa na tela, não rola junto com o conteúdo */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* Fica atrás de tudo */
-    
-    /* Escolha a imagem que você quer no fundo. 
-       Pode ser a mesma do banner para combinar! */
-    background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2574&auto=format&fit=crop');
-    
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    
-    /* O efeito de desfoque */
-    filter: blur(8px); 
-    
-    /* (Opcional) Deixa um pouco escuro para o card branco destacar mais */
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.3); /* Máscara escura */
+        font-weight: 700;
+        letter-spacing: 1px; /* Espaçamento entre letras */
+        text-transform: uppercase; /* Letras maiúsculas ficam mais elegantes em títulos */
+        font-size: 1.4rem;
     }
 }
 
-/* --- Inputs (Mobile First) --- */
 .input-group-row {
     display: flex;
-    flex-direction: column; /* Um embaixo do outro no celular */
+    flex-direction: column; 
     gap: 15px;
 
     input {
         width: 100%;
-        padding: 15px; /* Botões grandes para toque */
-        border: 1px solid #ddd;
+        padding: 15px;
+        border: 2px solid #eee; /* Borda cinza bem clarinha */
+        background-color: #f9f9f9; /* Fundo levemente cinza */
         border-radius: 8px;
+        font-family: "Poppins", sans-serif;
         font-size: 1rem;
+        outline: none;
+        transition: all 0.3s ease;
+
+        /* Efeito ao clicar no input */
+        &:focus {
+            border-color: #543271; /* Fica roxo */
+            background-color: #fff; /* Fica branco */
+            box-shadow: 0 0 8px rgba(84, 50, 113, 0.2); /* Brilho roxo */
+        }
     }
 
     button {
         width: 100%;
         padding: 15px;
-        background-color: #543271;
+        /* Gradiente no botão também! */
+        background: linear-gradient(135deg, #543271, #7b4b9c);
         color: white;
         border: none;
         border-radius: 8px;
-        font-size: 1rem;
-        font-weight: bold;
         cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+
+        &:hover {
+            transform: translateY(-2px); /* Sobe um pouquinho */
+            box-shadow: 0 5px 15px rgba(84, 50, 113, 0.3);
+        }
     }
 }
 
-/* --- Tabela (Mobile First) --- */
+/* --- Tabela --- */
 .lista-container-tarefas {
-    overflow-x: auto; /* Permite rolar a tabela de lado se não couber */
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+    overflow-x: auto;
 }
 
-.tabela-precos {
-    /* Botões de Ação */
-    .btn-acao {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 1.1rem;
-        padding: 5px;
-        margin: 0 5px;
-        transition: transform 0.2s;
+/* --- Tabela de Tarefas (Moderna) --- */
+.tabela-tarefas {
+    width: 100%;
+    border-collapse: separate; 
+    border-spacing: 0 10px; /* Espaço entre as linhas (parecem cards separados) */
+    margin-top: 10px;
+
+    /* Cabeçalho */
+   thead th {
+        /* Fundo mais suave (cinza azulado escuro) em vez de roxo berrante */
+        background-color: #fcfdff; 
+        color: #6c757d; /* Texto cinza escuro */
+        
+        padding: 15px 20px;
+        text-align: left;
+        font-weight: 700; /* Negrito */
+        font-size: 0.8rem; /* Fonte menor e mais discreta */
+        letter-spacing: 1.5px; /* Espaçamento entre letras */
+        text-transform: uppercase;
+        
+        border-bottom: 2px solid #e9ecef; /* Linha de separação sutil */
+        
+        /* Arredonda as pontas */
+        &:first-child { border-top-left-radius: 12px; }
+        &:last-child { border-top-right-radius: 12px; text-align: center; }
+    }
+
+    /* Linhas da Tabela */
+    tbody tr {
+        background-color: #ffffff;
+        transition: all 0.2s ease;
+        
+        /* Linha separadora simples */
+        border-bottom: 1px solid #f0f0f0;
+
+        &:last-child td {
+            /* Arredonda o final da tabela */
+            &:first-child { border-bottom-left-radius: 12px; }
+            &:last-child { border-bottom-right-radius: 12px; }
+        }
 
         &:hover {
-            transform: scale(1.2);
+            background-color: #fafafa; /* Cinza muito leve no hover */
+            /* Removemos a sombra e o zoom para ficar mais "flat" e limpo */
         }
     }
 
-    .btn-editar {
-        color: #007bff; /* Azul */
+    td {
+        padding: 18px;
+        color: #555;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+
+        /* Arredonda as pontas das linhas */
+        &:first-child { 
+            border-left: 1px solid #f0f0f0; 
+            border-top-left-radius: 10px; 
+            border-bottom-left-radius: 10px; 
+            
+            /* Nome da tarefa em destaque */
+            font-weight: 700;
+            color: #333;
+        }
+        
+        &:last-child { 
+            border-right: 1px solid #f0f0f0; 
+            border-top-right-radius: 10px; 
+            border-bottom-right-radius: 10px; 
+            text-align: center;
+        }
     }
 
-    .btn-excluir {
-        color: #dc3545; /* Vermelho */
+    /* Botões de Ação */
+    .btn-acao {
+        background: #f4f4f4; /* Fundo cinza bolinha */
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%; /* Bolinha perfeita */
+        margin: 0 5px;
+        transition: all 0.2s;
+        
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            transform: rotate(15deg); /* Gira um pouquinho */
+        }
     }
+
+    .btn-editar { color: #007bff; &:hover { background-color: #e3f2fd; } }
+    .btn-excluir { color: #dc3545; &:hover { background-color: #f8d7da; } }
+}
+    /* --- MODAL PERSONALIZADO --- */
+
+/* O fundo escuro que cobre a tela */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-
-    th, td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-    }
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Preto transparente */
+    z-index: 1000; /* Fica em cima de tudo */
     
-    th {
-        background-color: #543271;
-        color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    opacity: 1;
+    transition: opacity 0.3s ease;
+
+    /* Classe para esconder o modal */
+    &.hidden {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
     }
+}
+
+/* A caixinha branca */
+.modal-box {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
+    transform: scale(1);
+    transition: transform 0.3s ease;
+
+    .icone-alerta {
+        font-size: 3rem;
+        color: #ffcc00; /* Amarelo de alerta */
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: #666;
+        margin-bottom: 25px;
+    }
+}
+
+/* Botões do Modal */
+.modal-botoes {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+
+    #btn-cancelar-modal {
+        background-color: #e0e0e0;
+        color: #333;
+        &:hover { background-color: #d6d6d6; }
+    }
+
+    #btn-confirmar-exclusao {
+        background-color: #dc3545; /* Vermelho */
+        color: white;
+        &:hover { background-color: #b02a37; }
+    }
+}
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #ffffff; /* Branco para contrastar com o fundo ou imagem */
+    font-size: 0.9rem;
+    margin-top: 40px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 
 /* --- MEDIA QUERY (Desktop) --- */
-@media (min-width: 1024px) {
-    .container-principal {
-        max-width: 900px; /* Agora sim, cresce no desktop */
-    }
-
+@media (min-width: 768px) {
     .input-group-row {
         flex-direction: row; 
         align-items: center;
 
-        /* Ajuste de tamanhos */
-        #input-nome { flex: 3; }
-        #input-preco { flex: 2; }
-        #input-quantidade { flex: 1; }
+        #input-titulo { flex: 2; }
+        #input-descricao { flex: 2; }
         button { flex: 1; width: auto; }
+    }
+
+    .lista-container-tarefas {
+        padding: 0;
+        overflow-x: visible;
+    }
+    
+    .tabela-tarefas {
+        min-width: auto;
+        border-radius: 8px;
+        overflow: hidden;
     }
 }
