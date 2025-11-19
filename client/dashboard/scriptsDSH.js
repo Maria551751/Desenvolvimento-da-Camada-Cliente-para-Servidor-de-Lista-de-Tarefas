@@ -1,37 +1,34 @@
-// client/dashboard/scripts.js
+// client/tarefas/scripts.js
 
-// URL do servidor (Back-end)
 const BASE_URL = 'http://localhost:8000';
 
-// --- ELEMENTOS DO HTML ---
+// Elementos
 const tabelaCorpo = document.getElementById('corpo-tabela');
 const displayTotalGeral = document.getElementById('total-geral');
 const logoutButton = document.getElementById('botao-logout');
 const btnAdicionar = document.getElementById('btn-adicionar-item');
 
-// Variável para somar o total
+// Inputs
+const inputNome = document.getElementById('input-nome');
+const inputPreco = document.getElementById('input-preco');
+const inputQtd = document.getElementById('input-quantidade');
+const inputIdEdicao = document.getElementById('input-id-edicao');
+
 let totalGeral = 0;
 
-
-// --- 1. AUTENTICAÇÃO E SEGURANÇA ---
-
+// --- AUTENTICAÇÃO ---
 function getAuthHeaders() {
     const token = localStorage.getItem('accessToken');
-    
     if (!token) {
-        // Se não tiver o "crachá" (token), manda de volta pro Login
-        // Ajuste o caminho '../login' se sua pasta tiver outro nome
         window.location.href = '../login/index.html';
         return null; 
     }
-
     return {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
     };
 }
 
-// Botão de Sair
 if (logoutButton) {
     logoutButton.addEventListener('click', () => {
         localStorage.removeItem('accessToken');
@@ -39,17 +36,12 @@ if (logoutButton) {
     });
 }
 
-
-// --- 2. FUNÇÕES VISUAIS (Formatação) ---
-
-// Transforma número (10.5) em dinheiro (R$ 10,50)
+// --- FORMATAÇÃO ---
 function formatarMoeda(valor) {
     return parseFloat(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-
-// --- 3. CARREGAR A LISTA (Ler do Servidor) ---
-
+// --- CARREGAR ---
 async function fetchItems() {
     const headers = getAuthHeaders();
     if (!headers) return;
@@ -59,53 +51,37 @@ async function fetchItems() {
             method: 'GET',
             headers: headers,
         });
-
         if (response.ok) {
             const data = await response.json();
-            // O servidor devolve { tasks: [...] }
-            renderizarTabela(data.tasks); 
+            renderizarTabela(data.tasks);
         } else if (response.status === 401) {
-            alert('Sua sessão expirou. Faça login novamente.');
             localStorage.removeItem('accessToken');
             window.location.href = '../login/index.html';
         }
     } catch (error) {
-        console.error('Erro ao buscar itens:', error);
-        alert('Erro de conexão com o servidor.');
+        console.error('Erro:', error);
     }
 }
 
-
-// --- 4. DESENHAR A TABELA ---
-
+// --- RENDERIZAR ---
 function renderizarTabela(tarefas) {
-    tabelaCorpo.innerHTML = ''; // Limpa a tabela antes de desenhar
-    totalGeral = 0; // Zera o total para recalcular
+    tabelaCorpo.innerHTML = '';
+    totalGeral = 0;
 
     tarefas.forEach(tarefa => {
-        // --- A MÁGICA ---
-        // O servidor guarda 'title' (Nome) e 'description' (Texto).
-        // Nós guardamos o Preço e a Qtd escondidos dentro da 'description' como um JSON.
-        
         let nome = tarefa.title;
         let preco = 0;
         let qtd = 1;
 
         try {
-            // Tenta ler os dados escondidos
             const dadosExtras = JSON.parse(tarefa.description);
             preco = Number(dadosExtras.preco);
             qtd = Number(dadosExtras.qtd);
-        } catch (e) {
-            // Se der erro (ex: tarefa antiga ou sem descrição), ignora
-            console.log("Item sem preço definido:", nome);
-        }
+        } catch (e) { console.log("Item sem detalhes"); }
 
-        // Calcula o total desta linha
         const totalLinha = preco * qtd;
         totalGeral += totalLinha;
 
-        // Cria o HTML da linha (tr)
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${nome}</td>
@@ -113,135 +89,130 @@ function renderizarTabela(tarefas) {
             <td>${qtd}</td>
             <td><strong>${formatarMoeda(totalLinha)}</strong></td>
             <td>
-                <button class="btn-remove" data-id="${tarefa.id}" title="Remover item">
+                <button class="btn-acao btn-editar" 
+                        data-id="${tarefa.id}" 
+                        data-nome="${nome}"
+                        data-preco="${preco}"
+                        data-qtd="${qtd}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                
+                <button class="btn-acao btn-excluir" data-id="${tarefa.id}">
                     <i class="fas fa-trash"></i>
                 </button>
             </td>
         `;
-
         tabelaCorpo.appendChild(tr);
     });
 
-    // Atualiza o Total Geral lá embaixo da tabela
     if (displayTotalGeral) {
         displayTotalGeral.innerHTML = `<strong>${formatarMoeda(totalGeral)}</strong>`;
     }
     
-    // Re-ativa os botões de excluir das novas linhas
-    adicionarEventosExcluir();
+    adicionarEventosBotoes();
 }
 
+// --- ADICIONAR OU ATUALIZAR ---
+btnAdicionar.addEventListener('click', async (e) => {
+    e.preventDefault();
 
-// --- 5. ADICIONAR NOVO ITEM (Enviar pro Servidor) ---
+    const nome = inputNome.value;
+    const preco = inputPreco.value;
+    const qtd = inputQtd.value;
+    const idParaEditar = inputIdEdicao.value; // Verifica se tem um ID aqui
 
-if (btnAdicionar) {
-    btnAdicionar.addEventListener('click', async (e) => {
-        e.preventDefault();
+    if (!nome || !preco || !qtd) {
+        alert("Preencha todos os campos!");
+        return;
+    }
 
-        const inputNome = document.getElementById('input-nome');
-        const inputPreco = document.getElementById('input-preco');
-        const inputQtd = document.getElementById('input-quantidade');
+    const headers = getAuthHeaders();
+    if (!headers) return;
 
-        const nome = inputNome.value;
-        const preco = inputPreco.value; // Mantém como string por enquanto
-        const qtd = inputQtd.value;
+    const dadosParaSalvar = JSON.stringify({ preco: preco, qtd: qtd });
+    const payload = { title: nome, description: dadosParaSalvar };
 
-        // Validação
-        if (!nome || !preco || !qtd) {
-            alert("Preencha todos os campos!");
-            return;
-        }
-
-        const headers = getAuthHeaders();
-        if (!headers) return;
-
-        // --- EMPACOTAR DADOS ---
-        // O servidor só aceita 'title' e 'description'.
-        // Guardamos o Preço e a Qtd dentro da 'description'.
-        const dadosParaSalvar = JSON.stringify({
-            preco: preco,
-            qtd: qtd
-        });
-
-        const payload = {
-            title: nome,
-            description: dadosParaSalvar
-        };
-
-        try {
-            const response = await fetch(`${BASE_URL}/tasks`, {
+    try {
+        let response;
+        
+        // SE TIVER ID, É EDIÇÃO (PUT). SE NÃO, É CRIAÇÃO (POST).
+        if (idParaEditar) {
+            response = await fetch(`${BASE_URL}/tasks/${idParaEditar}`, {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(payload),
+            });
+        } else {
+            response = await fetch(`${BASE_URL}/tasks`, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(payload),
             });
-
-            if (response.ok) {
-                // Limpar campos
-                inputNome.value = '';
-                inputPreco.value = '';
-                inputQtd.value = '1';
-                inputNome.focus();
-                
-                // Atualizar a tabela
-                fetchItems();
-            } else {
-                alert("Erro ao adicionar item.");
-            }
-        } catch (error) {
-            console.error("Erro de rede:", error);
         }
-    });
-}
 
-
-// --- 6. EXCLUIR ITEM ---
-
-function adicionarEventosExcluir() {
-    const botoesExcluir = document.querySelectorAll('.btn-remove');
-
-    botoesExcluir.forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            // Pega o ID do item que guardamos no botão
-            const id = e.target.closest('button').dataset.id;
-            
-            const headers = getAuthHeaders();
-            if (!headers) return;
-
-            if(!confirm("Tem certeza que deseja excluir este item?")) return;
-
-            try {
-                const response = await fetch(`${BASE_URL}/tasks/${id}`, {
-                    method: 'DELETE',
-                    headers: headers
-                });
-
-                if (response.status === 204) {
-                    fetchItems(); // Recarrega a lista
-                } else {
-                    alert("Erro ao excluir.");
-                }
-            } catch (error) {
-                console.error("Erro ao excluir:", error);
-            }
-        });
-    });
-}
-
-
-// --- 7. MELHORIA DE USO (Selecionar texto ao clicar) ---
-const inputsParaSelecionar = ['input-preco', 'input-quantidade', 'input-nome'];
-inputsParaSelecionar.forEach(id => {
-    const element = document.getElementById(id);
-    if (element) {
-        element.addEventListener('focus', function() {
-            this.select();
-        });
+        if (response.ok) {
+            limparFormulario();
+            fetchItems();
+        } else {
+            alert("Erro ao salvar item.");
+        }
+    } catch (error) {
+        console.error("Erro:", error);
     }
 });
 
+// --- EVENTOS DE EDITAR E EXCLUIR ---
+function adicionarEventosBotoes() {
+    // Botões Excluir
+    document.querySelectorAll('.btn-excluir').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const id = e.target.closest('button').dataset.id;
+            if(!confirm("Excluir este item?")) return;
+
+            const headers = getAuthHeaders();
+            if (!headers) return;
+
+            await fetch(`${BASE_URL}/tasks/${id}`, { method: 'DELETE', headers: headers });
+            fetchItems();
+        });
+    });
+
+    // Botões Editar
+    document.querySelectorAll('.btn-editar').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const botao = e.target.closest('button');
+            
+            // Pega os dados que guardamos no botão HTML
+            const id = botao.dataset.id;
+            const nome = botao.dataset.nome;
+            const preco = botao.dataset.preco;
+            const qtd = botao.dataset.qtd;
+
+            // Joga os dados de volta nos inputs
+            inputNome.value = nome;
+            inputPreco.value = preco;
+            inputQtd.value = qtd;
+            inputIdEdicao.value = id; // Guarda o ID para sabermos que é edição
+
+            // Muda o visual do botão para avisar que estamos editando
+            btnAdicionar.innerHTML = 'Atualizar <i class="fas fa-sync-alt"></i>';
+            btnAdicionar.style.backgroundColor = '#007bff'; // Muda pra azul
+            
+            inputNome.focus();
+        });
+    });
+}
+
+function limparFormulario() {
+    inputNome.value = '';
+    inputPreco.value = '';
+    inputQtd.value = '1';
+    inputIdEdicao.value = ''; // Limpa o ID
+    
+    // Volta o botão ao normal
+    btnAdicionar.innerHTML = 'Adicionar <i class="fas fa-plus"></i>';
+    btnAdicionar.style.backgroundColor = '#543271'; // Volta pra roxo
+}
 
 // --- INICIALIZAÇÃO ---
-// Quando a página abre, carrega os itens
-document.addEventListener('DOMContentLoaded', () => {
-    fetchItems();
-});
+document.addEventListener('DOMContentLoaded', fetchItems);

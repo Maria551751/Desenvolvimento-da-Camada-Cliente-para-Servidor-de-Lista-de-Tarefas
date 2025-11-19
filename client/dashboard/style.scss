@@ -183,6 +183,28 @@ body {
 }
 
 .tabela-precos {
+    /* Botões de Ação */
+    .btn-acao {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 5px;
+        margin: 0 5px;
+        transition: transform 0.2s;
+
+        &:hover {
+            transform: scale(1.2);
+        }
+    }
+
+    .btn-editar {
+        color: #007bff; /* Azul */
+    }
+
+    .btn-excluir {
+        color: #dc3545; /* Vermelho */
+    }
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
